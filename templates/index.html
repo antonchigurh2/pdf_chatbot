@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with PDF</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="chat-container">
+        <h1 class="text-center">Chat with PDF</h1>
+        <div class="messages"></div>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" id="pdfFile" name="pdf_file" class="form-control mb-3">
+            <div class="message-input">
+                <input type="text" id="query" name="query" placeholder="Enter your query" class="form-control">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#uploadForm').submit(function(event) {
+                event.preventDefault();
+                
+                if ($('#pdfFile')[0].files.length === 0) {
+                    alert('Please upload a PDF file before submitting a query.');
+                    return;
+                }
+
+                var query = $('#query').val();
+                var formData = new FormData();
+                formData.append('pdf_file', $('#pdfFile')[0].files[0]);
+                formData.append('query', query);
+                
+                // Log the user query immediately
+                appendMessageToChat("user", query);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/upload/',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $('#query').val(''); // Clear the input field after submission
+                        appendMessageToChat("bot", response.new_message);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        alert(error.responseJSON.detail);
+                    }
+                });
+            });
+
+            function appendMessageToChat(role, message) {
+                var messageClass = role === 'user' ? 'user-message' : 'bot-message';
+                var messageElement = $('<div class="message ' + messageClass + '">' + message + '</div>');
+                $('.messages').append(messageElement);
+                $('.messages').scrollTop($('.messages')[0].scrollHeight);
+            }
+        });
+    </script>
+</body>
+</html>
