@@ -1,0 +1,7 @@
+fastapi
+PyPDF2
+sentence-transformers
+scikit-learn
+transformers
+uvicorn
+langchain
