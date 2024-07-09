@@ -4,7 +4,7 @@ This application allows users to upload a PDF file, chat about its contents, and
 
 ## Installation
 1. Clone the repository
-   git clone https://github.com/antonchigurh2/pdf_chatbot.git 
+   git clone https://github.com/antonchigurh2/pdf_chatbot.git    
    cd pdf-chatbot  
 2. Install dependencies  
    pip install -r requirements.txt  
